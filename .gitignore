@@ -1,0 +1,46 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+env/
+venv/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Streamlit logs & state
+.streamlit/
+
+# Local ChromaDB storage
+chroma_db/
+demo-rag-chroma/
+
+# PDF and temp data (if you ever store)
+*.pdf
+*.tmp
+*.temp
+*.log
+
+# IDE/Editor settings
+.vscode/
+.idea/
+
+# Jupyter/IPython cache
+.ipynb_checkpoints/
+
+# Build / dist artifacts
+build/
+dist/
+*.egg-info/
+
+# VSCode / JetBrains Python settings
+*.code-workspace
+*.sublime-project
+*.sublime-workspace
+
+# Optional: ignore uploaded files (if logged locally)
+uploaded_files/

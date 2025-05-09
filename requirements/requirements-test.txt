@@ -4,3 +4,6 @@ sentence-transformers==4.1.0 # CrossEncoder Re-ranking
 streamlit==1.45.0 # Application UI
 PyMuPDF==1.25.5 # PDF Document loader
 langchain-community==0.3.23 # Utils for text splitting
+
+pypdf==5.4.0
+pytesseract==0.3.13
