@@ -1,4 +1,4 @@
-# Loads + splits PDFs into Document chunks
+# document_loader.py
 
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 from langchain_community.document_loaders import PyMuPDFLoader
@@ -6,12 +6,20 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 import streamlit as st
 from typing import List
 from langchain_core.documents import Document
+from features.utils import clean_text
 import tempfile
 import os
 import re
 
+from features.content_extraction import (
+    extract_document_metadata,
+    extract_document_structure,
+    extract_figures
+)
+
+# Improved document processing function
 def process_document(uploaded_file: UploadedFile) -> List[Document]:
-    """Processes an uploaded PDF into cleaned, structured chunks."""
+    """Processes an uploaded PDF into cleaned, structured chunks, including metadata, OCR, and heading extraction."""
     try:
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
             temp_file.write(uploaded_file.getvalue())
@@ -20,8 +28,26 @@ def process_document(uploaded_file: UploadedFile) -> List[Document]:
         loader = PyMuPDFLoader(temp_path)
         raw_docs = loader.load()
 
+        # 🔍 CLEAN RAW TEXT
+        for doc in raw_docs:
+            doc.page_content = clean_text(doc.page_content)
+
+        # Extract document metadata and other details
+        metadata = extract_document_metadata(uploaded_file)
+        structure = extract_document_structure(uploaded_file)
+
+        # Process figures and OCR text
+        figures = extract_figures(uploaded_file)
+
+        # Split the document into chunks using the enhanced splitter
         text_splitter = ScientificTextSplitter()
         cleaned_docs = text_splitter.split_documents(raw_docs)
+
+        # Include metadata and structure into the documents
+        for doc in cleaned_docs:
+            doc.metadata.update(metadata)
+            doc.metadata.update(structure)
+            doc.metadata["figures"] = figures  # Add figure data if needed
 
         return cleaned_docs
 
@@ -34,7 +60,7 @@ def process_document(uploaded_file: UploadedFile) -> List[Document]:
         except (PermissionError, FileNotFoundError, UnboundLocalError):
             pass
 
-
+# ScientificTextSplitter class updated to include more intelligent cleaning
 class ScientificTextSplitter(RecursiveCharacterTextSplitter):
     """Enhanced splitter for scientific/technical documents."""
 

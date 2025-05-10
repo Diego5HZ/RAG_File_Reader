@@ -44,3 +44,8 @@ dist/
 
 # Optional: ignore uploaded files (if logged locally)
 uploaded_files/
+
+# Reasoning and processed files (user-specific state)
+processed_files.json
+reasoning_log.json
+reasoning_outputs/
